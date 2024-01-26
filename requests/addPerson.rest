@@ -2,7 +2,7 @@ POST http://127.0.0.1:3001/api/persons
 Content-Type: application/json
 
 {
-    "id": 10,
     "name": "Test Dude",
-    "number": "555-123456"
+    "number": "555-123456",
+    "id": 10
 }
