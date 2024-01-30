@@ -69,7 +69,7 @@ app.delete('/api/persons/:id', (request, response, next) =>{
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) =>{
+app.post('/api/persons', (request, response, next) =>{
     const body = request.body
 
     if (!body.name || !body.number) {
@@ -77,15 +77,6 @@ app.post('/api/persons', (request, response) =>{
             error: 'content missing' 
         })
     }
-
-    //const isNameInList = persons.some((person) => person.name === body.name)
-    //console.log(isNameInList)
-    //if (isNameInList) {
-    //    return response.status(400).json({ 
-    //        error: 'name must be unique'
-    //    })
-    //    .catch(error => next(error))
-    //}
 
     const person = new Note({
         name: body.name,
@@ -95,26 +86,20 @@ app.post('/api/persons', (request, response) =>{
     person.save().then(savedPerson =>{
         response.json(savedPerson)
     })
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
     const body = request.body
+    const id = request.params.id
 
-    if (!body.name || !body.number) {
-        return response.status(400).json({ 
-            error: 'content missing' 
-        }).catch(error => next(error))
-    }
-
-    const id = request.params.id;
-
-    Note.findByIdAndUpdate(id, { number: body.number }, { new: true })
-        .then(updatedPerson => {
-            if (updatedPerson) {
-                response.json(updatedPerson)
-            } else {
-                response.status(404).end()
-            }
+    Note.findByIdAndUpdate(
+        id, 
+        { number: body.number },
+        { new: true }
+    )
+        .then(updatedPerson => { 
+            response.json(updatedPerson)
         })
         .catch(error => next(error))
 })
